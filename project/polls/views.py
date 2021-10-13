@@ -35,7 +35,9 @@ class PoolViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
     """
     queryset = Pool.objects.all()
     serializer_class = PoolSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [AllowAny]
     permission_classes_by_action = {
-        'list':     [IsAuthenticatedOrReadOnly],
+        'create':     [IsAdminUser],
+        'destroy':     [IsAdminUser],
+        'update':     [IsAdminUser],
     }
