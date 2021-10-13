@@ -6,23 +6,36 @@ from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated, I
 from .models import Pool
 from .serializers import PoolSerializer
 
-class PoolViewSet(viewsets.ModelViewSet):
+
+class MixedPermissionModelViewSet(viewsets.ModelViewSet):
     """
-    ViewSet для добавления, обновления и удаления опросов.
+    Mixed permission base model allowing for action level
+    permission control. Subclasses may define their permissions
+    by creating a 'permission_classes_by_action' variable.
+
+    Example:
+    permission_classes_by_action = {'list': [AllowAny],
+                                    'create': [IsAdminUser]}
     """
-    queryset = Pool.objects.all()
-    serializer_class = PoolSerializer
-    permission_classes_by_action = {
-        'create':   [IsAdminUser],
-        'destroy':  [IsAdminUser],
-        'list':     [IsAuthenticatedOrReadOnly],
-        'update':   [IsAdminUser],
-    }
+
+    permission_classes_by_action = {}
 
     def get_permissions(self):
         try:
             # return permission_classes depending on `action` 
             return [permission() for permission in self.permission_classes_by_action[self.action]]
         except KeyError: 
-            raise MethodNotAllowed(self.action)
-            
+            # action is not set return default permission_classes
+            return [permission() for permission in self.permission_classes]
+
+
+class PoolViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
+    """
+    ViewSet для добавления, обновления и удаления опросов.
+    """
+    queryset = Pool.objects.all()
+    serializer_class = PoolSerializer
+    permission_classes = [IsAdminUser]
+    permission_classes_by_action = {
+        'list':     [IsAuthenticatedOrReadOnly],
+    }
