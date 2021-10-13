@@ -24,7 +24,7 @@ class ChoiceInline(admin.StackedInline):
 
 
 class TextResponseInline(admin.StackedInline):
-    """Текстовый ответы"""
+    """Текстовые ответы"""
     model = TextResponse
     extra = 0
 
@@ -33,3 +33,4 @@ class TextResponseInline(admin.StackedInline):
 class QuestionAdmin(admin.ModelAdmin):
     """Вопросы"""
     inlines = [ChoiceInline, TextResponseInline]
+    list_filter = ['pool']

@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Pool(models.Model):
+    """Модель опросов"""
     name = models.CharField('название', max_length=200)
     start_date = models.DateTimeField('дата начала')
     end_date = models.DateTimeField('дата окончания')
@@ -17,6 +18,7 @@ class Pool(models.Model):
 
 
 class Question(models.Model):
+    """Модель вопросов"""
     TYPES = (
         (TEXT := 1, 'Ответ текстом'),
         (ONE  := 2, 'Ответ с выбором одного варианта'),
@@ -32,10 +34,11 @@ class Question(models.Model):
         verbose_name_plural = 'вопросы'
 
     def __str__(self):
-        return self.text
+        return self.pool.name + ' - ' + self.text
 
 
 class Choice(models.Model):
+    """Модель выборов ответов на вопросы"""
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     text = models.CharField('вариант ответа', max_length=200)
     votes = models.IntegerField(default=0)
@@ -49,6 +52,7 @@ class Choice(models.Model):
 
 
 class TextResponse(models.Model):
+    """Модель текстовых ответов"""
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     text = models.CharField('ответ', max_length=200)
 
