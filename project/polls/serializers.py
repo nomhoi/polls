@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Pool, Question
+from .models import Choice, Pool, Question
 
 
 class PoolSerializer(serializers.ModelSerializer):
@@ -18,4 +18,13 @@ class QuestionSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Question
+        fields = '__all__'
+
+
+class ChoiceSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор модели вариантов ответов
+    """
+    class Meta:
+        model = Choice
         fields = '__all__'

@@ -41,7 +41,6 @@ class Choice(models.Model):
     """Модель выборов ответов на вопросы"""
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     text = models.CharField('вариант ответа', max_length=200)
-    votes = models.IntegerField(default=0)
 
     class Meta:
         verbose_name = 'варианты ответов'

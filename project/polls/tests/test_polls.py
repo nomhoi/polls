@@ -11,8 +11,8 @@ class PollsByAdminAPITestCase(APITestCase):
         self.client.force_login(self.user)
 
     def test_list(self):
-        resp = self.client.get('/api/v1/polls/')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        response = self.client.get('/api/v1/polls/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create(self):
         url = '/api/v1/polls/'
@@ -53,8 +53,8 @@ class PollsByUserAPITestCase(APITestCase):
         self.client.force_login(self.user)
 
     def test_list(self):
-        resp = self.client.get('/api/v1/polls/')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        response = self.client.get('/api/v1/polls/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create(self):
         url = '/api/v1/polls/'

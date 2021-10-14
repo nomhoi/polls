@@ -3,8 +3,8 @@ from rest_framework import viewsets
 from rest_framework.exceptions import MethodNotAllowed, PermissionDenied
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
 
-from .models import Pool, Question
-from .serializers import PoolSerializer, QuestionSerializer
+from .models import Choice, Pool, Question
+from .serializers import ChoiceSerializer, PoolSerializer, QuestionSerializer
 
 
 class MixedPermissionModelViewSet(viewsets.ModelViewSet):
@@ -49,6 +49,20 @@ class QuestionViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
     """
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
+    permission_classes = [AllowAny]
+    permission_classes_by_action = {
+        'create':     [IsAdminUser],
+        'destroy':     [IsAdminUser],
+        'update':     [IsAdminUser],
+    }
+
+
+class ChoiceViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
+    """
+    ViewSet для добавления, обновления и удаления вариантов ответов
+    """
+    queryset = Choice.objects.all()
+    serializer_class = ChoiceSerializer
     permission_classes = [AllowAny]
     permission_classes_by_action = {
         'create':     [IsAdminUser],

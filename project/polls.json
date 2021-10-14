@@ -20,6 +20,16 @@
   }
 },
 {
+  "model": "polls.pool",
+  "pk": 3,
+  "fields": {
+    "name": "\u041d\u043e\u0432\u044b\u0439 \u043e\u043f\u0440\u043e\u0441",
+    "start_date": "2021-10-13T02:09:43Z",
+    "end_date": "2021-10-27T02:09:51Z",
+    "description": "\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u043d\u043e\u0432\u043e\u0433\u043e \u043e\u043f\u0440\u043e\u0441\u0430 555"
+  }
+},
+{
   "model": "polls.question",
   "pk": 1,
   "fields": {
@@ -79,6 +89,15 @@
   "fields": {
     "pool": 2,
     "text": "\u0412\u043e\u043f\u0440\u043e\u0441 3",
+    "type": 2
+  }
+},
+{
+  "model": "polls.question",
+  "pk": 9,
+  "fields": {
+    "pool": 2,
+    "text": "\u041d\u043e\u0432\u044b\u0439 \u0432\u043e\u043f\u0440\u043e\u0441",
     "type": 2
   }
 },
