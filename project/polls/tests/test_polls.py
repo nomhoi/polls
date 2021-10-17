@@ -14,8 +14,6 @@ class PollsByAdminAPITestCase(APITestCase):
     def test_list(self):
         response = self.client.get('/api/v1/polls/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)  
-        
-        # TODO: list polls without nested models 
 
     def test_get(self):
         response = self.client.get('/api/v1/polls/1/')
@@ -122,8 +120,6 @@ class PollsByUserAPITestCase(APITestCase):
     def test_list(self):
         response = self.client.get('/api/v1/polls/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        # TODO: list polls without nested models
 
     def test_get(self):
         self.user = User.objects.get(username='user')

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.exceptions import MethodNotAllowed, PermissionDenied
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
 
 from .models import Choice, Pool, Question
 from .serializers import ChoiceSerializer, PoolSerializer, QuestionSerializer, PoolNestedSerializer
@@ -84,3 +85,15 @@ class PoolNestedViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
         'destroy':    [IsAdminUser],
         'update':     [IsAdminUser],
     }
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = PoolSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = PoolSerializer(queryset, many=True)
+        return Response(serializer.data)
+        
