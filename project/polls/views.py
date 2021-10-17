@@ -4,7 +4,7 @@ from rest_framework.exceptions import MethodNotAllowed, PermissionDenied
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from .models import Choice, Pool, Question
-from .serializers import ChoiceSerializer, PoolSerializer, QuestionSerializer
+from .serializers import ChoiceSerializer, PoolSerializer, QuestionSerializer, PoolNestedSerializer
 
 
 class MixedPermissionModelViewSet(viewsets.ModelViewSet):
@@ -67,5 +67,20 @@ class ChoiceViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
     permission_classes_by_action = {
         'create':     [IsAdminUser],
         'destroy':     [IsAdminUser],
+        'update':     [IsAdminUser],
+    }
+
+
+class PoolNestedViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
+    """
+    ViewSet для добавления, обновления и удаления опросов.
+    """
+    queryset = Pool.objects.all()
+    serializer_class = PoolNestedSerializer
+    permission_classes = [AllowAny]
+    permission_classes_by_action = {
+        'create':     [IsAdminUser],
+        'retrieve':   [IsAuthenticated],
+        'destroy':    [IsAdminUser],
         'update':     [IsAdminUser],
     }

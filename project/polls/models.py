@@ -25,7 +25,7 @@ class Question(models.Model):
         (MANY := 3, 'Ответ с выбором нескольких вариантов'),
     )
 
-    pool = models.ForeignKey(Pool, on_delete=models.CASCADE)
+    pool = models.ForeignKey(Pool, related_name='questions', on_delete=models.CASCADE)
     text = models.CharField('вопрос', max_length=200)
     type = models.PositiveSmallIntegerField('Тип ответа', choices=TYPES)
 
@@ -39,7 +39,7 @@ class Question(models.Model):
 
 class Choice(models.Model):
     """Модель выборов ответов на вопросы"""
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name='choices', on_delete=models.CASCADE)
     text = models.CharField('вариант ответа', max_length=200)
 
     class Meta:

@@ -47,6 +47,14 @@ GET /api/v1/polls/
 
 Возвращает список опросов. Не требует аутентификации.
 
+## Get Poll
+
+```
+GET /api/v1/polls/:id/
+```
+
+Возвращает опрос. Требуется аутентификация.
+
 
 ## Create Poll
 
@@ -57,10 +65,41 @@ POST /api/v1/polls/
 Пример тела запроса:
 ```
 {
-    "name": "Новый опрос",
+    "name": "New poll",
     "start_date": "2021-10-13T02:09:43Z",
     "end_date": "2021-10-27T02:09:51Z",
-    "description": "Описание нового опроса"
+    "description": "New poll description",          
+    "questions": [
+        {
+            "type": 1,
+            "text": "Question 1",
+            "choices": []
+        },
+        {
+            "type": 2,
+            "text": "Question 2",
+            "choices": [
+                {
+                    "text": "Respond variant 1"
+                },
+                {
+                    "text": "Respond variant 2"
+                }
+            ]
+        },
+        {
+            "type": 3,
+            "text": "Question 3",
+            "choices": [
+                {
+                    "text": "Respond variant 1"
+                },
+                {
+                    "text": "Respond variant 2"
+                }
+            ]
+        }
+    ]
 }
 ```
 
@@ -78,10 +117,41 @@ PUT /api/v1/polls/:id/
 Пример тела запроса:
 ```
 {
-    "name": "Обновление опроса",
+    "name": "Change poll",
     "start_date": "2021-10-13T02:09:43Z",
     "end_date": "2021-10-27T02:09:51Z",
-    "description": "Обновление опроса"
+    "description": "Change poll description",
+    "questions": [
+        {
+            "type": 1,
+            "text": "Question 1",
+            "choices": []
+        },
+        {
+            "type": 2,
+            "text": "Question 2",
+            "choices": [
+                {
+                    "text": "Respond variant 1"
+                },
+                {
+                    "text": "Respond variant 2"
+                }
+            ]
+        },
+        {
+            "type": 3,
+            "text": "Question 3",
+            "choices": [
+                {
+                    "text": "Respond variant 1"
+                },
+                {
+                    "text": "Respond variant 2"
+                }
+            ]
+        }
+    ]
 }
 ```
 
@@ -99,3 +169,72 @@ DELETE /api/v1/polls/:id/
 Удаляет опрос.
 
 Требуется аутентификация, разрешено только админу.
+
+
+# API Response format
+
+## Multiple Polls
+
+```
+[
+    {
+        "id": 1,
+        "name": "Poll 1",
+        "start_date": "2021-10-13T02:09:43Z",
+        "end_date": "2021-10-27T02:09:51Z",
+        "description": "Poll 1 description"
+    },
+    {
+        "id": 2,
+        "name": "Poll 2",
+        "start_date": "2021-10-13T05:33:53Z",
+        "end_date": "2021-10-28T05:33:57Z",
+        "description": "Poll 2 description"
+    }
+]
+```
+
+## Single Poll
+
+```
+{
+    "name": "Poll 1",
+    "start_date": "2021-10-13T02:09:43Z",
+    "end_date": "2021-10-27T02:09:51Z",
+    "description": "Poll 1 description",
+    "questions": [
+        {
+            "type": 1,
+            "text": "Question 1",
+            "choices": []
+        },
+        {
+            "type": 2,
+            "text": "Question 2",
+            "choices": [
+                {
+                    "text": "Respond 1"
+                },
+                {
+                    "text": "Respond 2"
+                }
+            ]
+        },
+        {
+            "type": 3,
+            "text": "Question 3",
+            "choices": [
+                {
+                    "text": "Respond 1"
+                },
+                {
+                    "text": "Respond 2"
+                },
+                {
+                    "text": "Respond 3"
+                }
+            ]
+        }
+    ]
+}
+```

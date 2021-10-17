@@ -2,3 +2,4 @@ django==2.2.10
 djangorestframework==3.12.4
 markdown==3.3.4
 django-filter==21.1
+drf-writable-nested==0.6.3

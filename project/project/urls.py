@@ -6,7 +6,8 @@ from polls import views
 
 
 router = DefaultRouter()
-router.register(r'polls', views.PoolViewSet)
+# router.register(r'polls', views.PoolViewSet)
+router.register(r'polls', views.PoolNestedViewSet)
 router.register(r'questions', views.QuestionViewSet)
 router.register(r'choices', views.ChoiceViewSet)
 
