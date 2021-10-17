@@ -6,10 +6,10 @@ from polls import views
 
 
 router = DefaultRouter()
-# router.register(r'polls', views.PoolViewSet)
+# router.register(r'polls', views.PoolViewSet)          # TODO: remove
 router.register(r'polls', views.PoolNestedViewSet)
-router.register(r'questions', views.QuestionViewSet)
-router.register(r'choices', views.ChoiceViewSet)
+router.register(r'questions', views.QuestionViewSet)    # TODO: remove
+router.register(r'choices', views.ChoiceViewSet)        # TODO: remove
 
 urlpatterns = [
     path('admin/', admin.site.urls),

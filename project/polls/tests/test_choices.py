@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from rest_framework import status
 
+# TODO: remove
 
 class ChoicesByAdminAPITestCase(APITestCase):
     fixtures = ['users', 'polls']
