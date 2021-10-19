@@ -1,11 +1,12 @@
+import json
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.exceptions import MethodNotAllowed, PermissionDenied
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
-from .models import Choice, Pool, Question
-from .serializers import ChoiceSerializer, PoolSerializer, QuestionSerializer, PoolNestedSerializer
+from .models import Choice, Poll, Question, UserResponse
+from .serializers import ChoiceSerializer, PollSerializer, QuestionSerializer, PollNestedSerializer
 
 
 class MixedPermissionModelViewSet(viewsets.ModelViewSet):
@@ -30,12 +31,12 @@ class MixedPermissionModelViewSet(viewsets.ModelViewSet):
             return [permission() for permission in self.permission_classes]
 
 
-class PoolViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
+class PollViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
     """
     ViewSet для добавления, обновления и удаления опросов.
     """
-    queryset = Pool.objects.all()
-    serializer_class = PoolSerializer
+    queryset = Poll.objects.all()
+    serializer_class = PollSerializer
     permission_classes = [AllowAny]
     permission_classes_by_action = {
         'create':     [IsAdminUser],
@@ -72,12 +73,12 @@ class ChoiceViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
     }
 
 
-class PoolNestedViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
+class PollNestedViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
     """
     ViewSet для добавления, обновления и удаления опросов.
     """
-    queryset = Pool.objects.all()
-    serializer_class = PoolNestedSerializer
+    queryset = Poll.objects.all()
+    serializer_class = PollNestedSerializer
     permission_classes = [AllowAny]
     permission_classes_by_action = {
         'create':     [IsAdminUser],
@@ -86,14 +87,47 @@ class PoolNestedViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
         'update':     [IsAdminUser],
     }
 
+    def get_queryset(self):
+        return Poll.objects.all().prefetch_related('questions__choices')
+
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = PoolSerializer(page, many=True)
+            serializer = PollSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
-        serializer = PoolSerializer(queryset, many=True)
+        serializer = PollSerializer(queryset, many=True)
         return Response(serializer.data)
-        
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)        
+        data = serializer.data
+
+        if not request.user.is_staff:
+            ur_objects = UserResponse.objects.filter(user=request.user, poll=instance). \
+                values('choice__id', 'boolean_response', 'text_response')
+
+            user_responses = {}
+            for ur in ur_objects:
+                if ur['boolean_response']:
+                    user_responses[ur['choice__id']] = ur['boolean_response']
+                else:
+                    user_responses[ur['choice__id']] = ur['text_response']
+
+            for question in data['questions']:
+                for choice in question['choices']:
+                    choice_id = choice['id']
+                    if choice_id in user_responses:
+                        choice['respond'] = user_responses[choice_id]
+                    else:
+                        if question['type'] == 1:
+                            choice['respond'] = ''
+                        else:    
+                            choice['respond'] = False
+
+        # print(json.dumps(data, indent=4))
+
+        return Response(data)

@@ -1,15 +1,15 @@
 from rest_framework import serializers
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 
-from .models import Choice, Pool, Question
+from .models import Choice, Poll, Question
 
 
-class PoolSerializer(serializers.ModelSerializer):
+class PollSerializer(serializers.ModelSerializer):
     """
     Сериализатор модели опросов
     """
     class Meta:
-        model = Pool
+        model = Poll
         fields = '__all__'
 
 
@@ -37,7 +37,7 @@ class ChoiceNestedSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Choice
-        fields = ('text',)
+        fields = ('id', 'choice')
 
 
 class QuestionNestedSerializer(WritableNestedModelSerializer):
@@ -48,15 +48,15 @@ class QuestionNestedSerializer(WritableNestedModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('type', 'text', 'choices')
+        fields = ('id', 'type', 'text', 'choices')
 
 
-class PoolNestedSerializer(WritableNestedModelSerializer):
+class PollNestedSerializer(WritableNestedModelSerializer):
     """
     Сериализатор модели опросов с вопросами
     """
     questions = QuestionNestedSerializer(many=True)
 
     class Meta:
-        model = Pool
-        fields = ('name', 'start_date', 'end_date', 'description', 'questions')
+        model = Poll
+        fields = ('id', 'name', 'start_date', 'end_date', 'description', 'questions')

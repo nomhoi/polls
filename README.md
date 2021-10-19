@@ -37,7 +37,9 @@ pip install -r requirements.txt
 python manage.py runserver
 ```
 
+
 # Endpoints
+
 
 ## List Polls
 
@@ -47,6 +49,7 @@ GET /api/v1/polls/
 
 Возвращает список опросов. Не требует аутентификации.
 
+
 ## Get Poll
 
 ```
@@ -54,6 +57,7 @@ GET /api/v1/polls/:id/
 ```
 
 Возвращает опрос. Требуется аутентификация.
+
 
 
 ## Create Poll
@@ -173,6 +177,156 @@ DELETE /api/v1/polls/:id/
 
 # API Response format
 
+
+## Single Poll For Admin
+
+```
+{
+    "id": 1,
+    "name": "Poll 1",
+    "start_date": "2021-10-13T02:09:43Z",
+    "end_date": "2021-10-27T02:09:51Z",
+    "description": "Poll 1 description",
+    "questions": [
+        {
+            "id": 1,
+            "type": 1,
+            "text": "Question 1",
+            "choices": [
+                {
+                    "id": 15,
+                    "choice": null
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "type": 2,
+            "text": "Question 2",
+            "choices": [
+                {
+                    "id": 4,
+                    "choice": "Respond 1"
+                },
+                {
+                    "id": 5,
+                    "choice": "Respond 2"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "type": 3,
+            "text": "Question 3",
+            "choices": [
+                {
+                    "id": 6,
+                    "choice": "Respond 1"
+                },
+                {
+                    "id": 7,
+                    "choice": "Respond 2"
+                },
+                {
+                    "id": 14,
+                    "choice": "Respond 3"
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "type": 1,
+            "text": "Question 4",
+            "choices": [
+                {
+                    "id": 16,
+                    "choice": null
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+## Single Poll For Users
+
+```
+{
+    "id": 1,
+    "name": "Poll 1",
+    "start_date": "2021-10-13T02:09:43Z",
+    "end_date": "2021-10-27T02:09:51Z",
+    "description": "Poll 1 description",
+    "questions": [
+        {
+            "id": 1,
+            "type": 1,
+            "text": "Question 1",
+            "choices": [
+                {
+                    "id": 15,
+                    "choice": null,
+                    "respond": "My response."
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "type": 2,
+            "text": "Question 2",
+            "choices": [
+                {
+                    "id": 4,
+                    "choice": "Respond 1",
+                    "respond": true
+                },
+                {
+                    "id": 5,
+                    "choice": "Respond 2",
+                    "respond": false
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "type": 3,
+            "text": "Question 3",
+            "choices": [
+                {
+                    "id": 6,
+                    "choice": "Respond 1",
+                    "respond": true
+                },
+                {
+                    "id": 7,
+                    "choice": "Respond 2",
+                    "respond": true
+                },
+                {
+                    "id": 14,
+                    "choice": "Respond 3",
+                    "respond": false
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "type": 1,
+            "text": "Question 4",
+            "choices": [
+                {
+                    "id": 16,
+                    "choice": null,
+                    "respond": ""
+                }
+            ]
+        }
+    ]
+}
+```
+
+
 ## Multiple Polls
 
 ```
@@ -192,49 +346,4 @@ DELETE /api/v1/polls/:id/
         "description": "Poll 2 description"
     }
 ]
-```
-
-## Single Poll
-
-```
-{
-    "name": "Poll 1",
-    "start_date": "2021-10-13T02:09:43Z",
-    "end_date": "2021-10-27T02:09:51Z",
-    "description": "Poll 1 description",
-    "questions": [
-        {
-            "type": 1,
-            "text": "Question 1",
-            "choices": []
-        },
-        {
-            "type": 2,
-            "text": "Question 2",
-            "choices": [
-                {
-                    "text": "Respond 1"
-                },
-                {
-                    "text": "Respond 2"
-                }
-            ]
-        },
-        {
-            "type": 3,
-            "text": "Question 3",
-            "choices": [
-                {
-                    "text": "Respond 1"
-                },
-                {
-                    "text": "Respond 2"
-                },
-                {
-                    "text": "Respond 3"
-                }
-            ]
-        }
-    ]
-}
 ```

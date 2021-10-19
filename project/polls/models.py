@@ -1,7 +1,8 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
-class Pool(models.Model):
+class Poll(models.Model):
     """Модель опросов"""
     name = models.CharField('название', max_length=200)
     start_date = models.DateTimeField('дата начала')
@@ -25,7 +26,7 @@ class Question(models.Model):
         (MANY := 3, 'Ответ с выбором нескольких вариантов'),
     )
 
-    pool = models.ForeignKey(Pool, related_name='questions', on_delete=models.CASCADE)
+    poll = models.ForeignKey(Poll, related_name='questions', on_delete=models.CASCADE)
     text = models.CharField('вопрос', max_length=200)
     type = models.PositiveSmallIntegerField('Тип ответа', choices=TYPES)
 
@@ -34,30 +35,33 @@ class Question(models.Model):
         verbose_name_plural = 'вопросы'
 
     def __str__(self):
-        return self.pool.name + ' - ' + self.text
+        return self.poll.name + ' - ' + self.text
 
 
 class Choice(models.Model):
-    """Модель выборов ответов на вопросы"""
+    """Модель вариантов ответов на вопросы"""
     question = models.ForeignKey(Question, related_name='choices', on_delete=models.CASCADE)
-    text = models.CharField('вариант ответа', max_length=200)
+    choice = models.CharField('вариант ответа', max_length=200, null=True, blank=True)
 
     class Meta:
         verbose_name = 'варианты ответов'
         verbose_name_plural = 'варианты ответов'
 
     def __str__(self):
-        return self.text
+        return f'{self.question} - {self.choice}' if self.choice else f'{self.question} - text response'
 
 
-class TextResponse(models.Model):
-    """Модель текстовых ответов"""
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    text = models.CharField('ответ', max_length=200)
+class UserResponse(models.Model):
+    """Модель ответов"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
+    choice = models.OneToOneField(Choice, on_delete=models.CASCADE, null=True, blank=True)
+    boolean_response = models.BooleanField('ответ на вариант', null=True, blank=True)
+    text_response = models.TextField('текстовый ответ', null=True, blank=True)
 
     class Meta:
-        verbose_name = 'текстовые ответы'
-        verbose_name_plural = 'текстовые ответы'
+        verbose_name = 'ответ'
+        verbose_name_plural = 'ответы'
 
     def __str__(self):
-        return self.text
+        return f'{self.choice}'

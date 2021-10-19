@@ -6,9 +6,7 @@ from polls import views
 
 
 router = DefaultRouter()
-router.register(r'polls', views.PoolNestedViewSet)
-router.register(r'questions', views.QuestionViewSet)    # TODO: remove
-router.register(r'choices', views.ChoiceViewSet)        # TODO: remove
+router.register(r'polls', views.PollNestedViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

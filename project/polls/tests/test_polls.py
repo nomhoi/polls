@@ -20,7 +20,7 @@ class PollsByAdminAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)        
         self.assertEqual(response.data['name'], 'Poll 1')
         self.assertEqual(len(response.data['questions']), 4)
-        
+                
     def test_create(self):
         url = '/api/v1/polls/'
         data = {
@@ -39,10 +39,10 @@ class PollsByAdminAPITestCase(APITestCase):
                     "text": "Question 2",
                     "choices": [
                         {
-                            "text": "Respond variant 1"
+                            "choice": "Respond variant 1"
                         },
                         {
-                            "text": "Respond variant 2"
+                            "choice": "Respond variant 2"
                         }
                     ]
                 },
@@ -51,10 +51,10 @@ class PollsByAdminAPITestCase(APITestCase):
                     "text": "Question 3",
                     "choices": [
                         {
-                            "text": "Respond variant 1"
+                            "choice": "Respond variant 1"
                         },
                         {
-                            "text": "Respond variant 2"
+                            "choice": "Respond variant 2"
                         }
                     ]
                 }
@@ -82,10 +82,10 @@ class PollsByAdminAPITestCase(APITestCase):
                     "text": "Question 2",
                     "choices": [
                         {
-                            "text": "Respond variant 1"
+                            "choice": "Respond variant 1"
                         },
                         {
-                            "text": "Respond variant 2"
+                            "choice": "Respond variant 2"
                         }
                     ]
                 },
@@ -94,10 +94,10 @@ class PollsByAdminAPITestCase(APITestCase):
                     "text": "Question 3",
                     "choices": [
                         {
-                            "text": "Respond variant 1"
+                            "choice": "Respond variant 1"
                         },
                         {
-                            "text": "Respond variant 2"
+                            "choice": "Respond variant 2"
                         }
                     ]
                 }
@@ -121,7 +121,7 @@ class PollsByUserAPITestCase(APITestCase):
         response = self.client.get('/api/v1/polls/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_get(self):
+    def test_get_poll_1(self):
         self.user = User.objects.get(username='user')
         self.client.force_login(self.user)
 
@@ -129,6 +129,15 @@ class PollsByUserAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)        
         self.assertEqual(response.data['name'], 'Poll 1')
         self.assertEqual(len(response.data['questions']), 4)
+
+    def test_get_poll_2(self):
+        self.user = User.objects.get(username='user')
+        self.client.force_login(self.user)
+
+        response = self.client.get('/api/v1/polls/2/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)        
+        self.assertEqual(response.data['name'], 'Poll 2')
+        self.assertEqual(len(response.data['questions']), 3)
 
     def test_create(self):
         url = '/api/v1/polls/'

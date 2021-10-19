@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Choice, Pool, TextResponse, Question
+from .models import Choice, Poll, Question, UserResponse
 
 
 class QuestionInline(admin.StackedInline):
@@ -11,8 +11,8 @@ class QuestionInline(admin.StackedInline):
     extra = 0
 
 
-@admin.register(Pool)
-class PoolAdmin(admin.ModelAdmin):
+@admin.register(Poll)
+class PollAdmin(admin.ModelAdmin):
     """Опросы"""
     inlines = [QuestionInline]
 
@@ -23,14 +23,15 @@ class ChoiceInline(admin.StackedInline):
     extra = 0
 
 
-class TextResponseInline(admin.StackedInline):
-    """Текстовые ответы"""
-    model = TextResponse
-    extra = 0
-
-
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
     """Вопросы"""
-    inlines = [ChoiceInline, TextResponseInline]
-    list_filter = ['pool']
+    inlines = [ChoiceInline]
+    list_filter = ['poll']
+    
+
+@admin.register(UserResponse)
+class UserResponseAdmin(admin.ModelAdmin):
+    """Вопросы"""
+    list_filter = ['poll', 'user']
+    # TODO: фильтровать список ответов после выбора опроса и пользователя
