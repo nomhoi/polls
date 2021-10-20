@@ -59,7 +59,6 @@ GET /api/v1/polls/:id/
 Возвращает опрос. Требуется аутентификация.
 
 
-
 ## Create Poll
 
 ```
@@ -112,13 +111,13 @@ POST /api/v1/polls/
 Требуется аутентификация, разрешено только админу.
 
 
-## Update Poll
+## Update Poll for Admins
 
 ```
 PUT /api/v1/polls/:id/
 ```
 
-Пример тела запроса:
+Пример тела запроса для админа:
 ```
 {
     "name": "Change poll",
@@ -159,9 +158,62 @@ PUT /api/v1/polls/:id/
 }
 ```
 
-Обновляет опрос. Возвращает обновленный опрос.
+Обновляет и возвращает новый опрос.
 
 Требуется аутентификация, разрешено только админу.
+
+
+## Update Poll for Users
+
+```
+PUT /api/v1/responses/:id/
+```
+
+Пример тела запроса для пользователя:
+```
+{
+    "id": 1,
+    "responses": [
+        {
+            "id": 1,
+            "boolean_response": null,
+            "text_response": "My response.",
+            "user": 2,
+            "poll": 1,
+            "choice": 15
+        },
+        {
+            "id": 2,
+            "boolean_response": true,
+            "text_response": "",
+            "user": 2,
+            "poll": 1,
+            "choice": 4
+        },
+        {
+            "id": 3,
+            "boolean_response": true,
+            "text_response": "",
+            "user": 2,
+            "poll": 1,
+            "choice": 6
+        },
+        {
+            "id": 4,
+            "boolean_response": true,
+            "text_response": "",
+            "user": 2,
+            "poll": 1,
+            "choice": 7
+        }
+    ]
+}
+```
+
+Обновляет модель UserResponse. Возвращает обновленный опрос.
+В список responses включать только те ответы, которые были изменены в клиентском приложении.
+
+Требуется аутентификация.
 
 
 ## Delete Poll
@@ -178,10 +230,9 @@ DELETE /api/v1/polls/:id/
 # API Response format
 
 
-## Single Poll For Admin
+## Single Poll for Admin
 
 ```
-{
     "id": 1,
     "name": "Poll 1",
     "start_date": "2021-10-13T02:09:43Z",
@@ -249,7 +300,9 @@ DELETE /api/v1/polls/:id/
 ```
 
 
-## Single Poll For Users
+## Single Poll for Users
+
+Ответ после запроса GET /api/v1/polls/:id/
 
 ```
 {
@@ -267,6 +320,7 @@ DELETE /api/v1/polls/:id/
                 {
                     "id": 15,
                     "choice": null,
+                    "respond_id": 1,
                     "respond": "My response."
                 }
             ]
@@ -279,6 +333,7 @@ DELETE /api/v1/polls/:id/
                 {
                     "id": 4,
                     "choice": "Respond 1",
+                    "respond_id": 2,
                     "respond": true
                 },
                 {
@@ -296,11 +351,13 @@ DELETE /api/v1/polls/:id/
                 {
                     "id": 6,
                     "choice": "Respond 1",
+                    "respond_id": 3,
                     "respond": true
                 },
                 {
                     "id": 7,
                     "choice": "Respond 2",
+                    "respond_id": 4,
                     "respond": true
                 },
                 {
@@ -321,6 +378,51 @@ DELETE /api/v1/polls/:id/
                     "respond": ""
                 }
             ]
+        }
+    ]
+}
+```
+
+
+## Single Poll for Users
+
+Ответ после запроса PUT /api/v1/responses/:id/ 
+
+```
+{
+    "id": 1,
+    "responses": [
+        {
+            "id": 1,
+            "boolean_response": null,
+            "text_response": "My response.",
+            "user": 2,
+            "poll": 1,
+            "choice": 15
+        },
+        {
+            "id": 2,
+            "boolean_response": true,
+            "text_response": "",
+            "user": 2,
+            "poll": 1,
+            "choice": 4
+        },
+        {
+            "id": 3,
+            "boolean_response": true,
+            "text_response": "",
+            "user": 2,
+            "poll": 1,
+            "choice": 6
+        },
+        {
+            "id": 4,
+            "boolean_response": true,
+            "text_response": "",
+            "user": 2,
+            "poll": 1,
+            "choice": 7
         }
     ]
 }

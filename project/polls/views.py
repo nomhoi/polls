@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated, I
 from rest_framework.response import Response
 
 from .models import Choice, Poll, Question, UserResponse
-from .serializers import ChoiceSerializer, PollSerializer, QuestionSerializer, PollNestedSerializer
+from .serializers import PollNestedQuestionSerializer, PollNestedUserResponseSerializer, PollSerializer
 
 
 class MixedPermissionModelViewSet(viewsets.ModelViewSet):
@@ -31,54 +31,12 @@ class MixedPermissionModelViewSet(viewsets.ModelViewSet):
             return [permission() for permission in self.permission_classes]
 
 
-class PollViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
-    """
-    ViewSet для добавления, обновления и удаления опросов.
-    """
-    queryset = Poll.objects.all()
-    serializer_class = PollSerializer
-    permission_classes = [AllowAny]
-    permission_classes_by_action = {
-        'create':     [IsAdminUser],
-        'destroy':     [IsAdminUser],
-        'update':     [IsAdminUser],
-    }
-
-
-class QuestionViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
-    """
-    ViewSet для добавления, обновления и удаления вопросов.
-    """
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
-    permission_classes = [AllowAny]
-    permission_classes_by_action = {
-        'create':     [IsAdminUser],
-        'destroy':     [IsAdminUser],
-        'update':     [IsAdminUser],
-    }
-
-
-class ChoiceViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
-    """
-    ViewSet для добавления, обновления и удаления вариантов ответов
-    """
-    queryset = Choice.objects.all()
-    serializer_class = ChoiceSerializer
-    permission_classes = [AllowAny]
-    permission_classes_by_action = {
-        'create':     [IsAdminUser],
-        'destroy':     [IsAdminUser],
-        'update':     [IsAdminUser],
-    }
-
-
 class PollNestedViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
     """
     ViewSet для добавления, обновления и удаления опросов.
     """
-    queryset = Poll.objects.all()
-    serializer_class = PollNestedSerializer
+    queryset = Poll.objects.all().prefetch_related('questions__choices')
+    serializer_class = PollNestedQuestionSerializer
     permission_classes = [AllowAny]
     permission_classes_by_action = {
         'create':     [IsAdminUser],
@@ -86,9 +44,6 @@ class PollNestedViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
         'destroy':    [IsAdminUser],
         'update':     [IsAdminUser],
     }
-
-    def get_queryset(self):
-        return Poll.objects.all().prefetch_related('questions__choices')
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -108,26 +63,32 @@ class PollNestedViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
 
         if not request.user.is_staff:
             ur_objects = UserResponse.objects.filter(user=request.user, poll=instance). \
-                values('choice__id', 'boolean_response', 'text_response')
+                values('id', 'choice__id', 'boolean_response', 'text_response')
 
-            user_responses = {}
-            for ur in ur_objects:
-                if ur['boolean_response']:
-                    user_responses[ur['choice__id']] = ur['boolean_response']
-                else:
-                    user_responses[ur['choice__id']] = ur['text_response']
+            user_responses = {ur['choice__id']: ur for ur in ur_objects}
 
             for question in data['questions']:
                 for choice in question['choices']:
                     choice_id = choice['id']
                     if choice_id in user_responses:
-                        choice['respond'] = user_responses[choice_id]
+                        choice['respond_id'] = user_responses[choice_id]['id']
+                        if user_responses[choice_id]['boolean_response']:
+                            choice['respond'] = user_responses[choice_id]['boolean_response']
+                        else:
+                            choice['respond'] = user_responses[choice_id]['text_response']
                     else:
                         if question['type'] == 1:
                             choice['respond'] = ''
                         else:    
-                            choice['respond'] = False
-
-        # print(json.dumps(data, indent=4))
+                            choice['respond'] = False                            
 
         return Response(data)
+
+
+class PollNestedUserResponseViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
+    """
+    ViewSet для добавления, обновления ответов.
+    """
+    queryset = Poll.objects.all()
+    serializer_class = PollNestedUserResponseSerializer
+    permission_classes = [IsAuthenticated]

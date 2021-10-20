@@ -7,6 +7,7 @@ from polls import views
 
 router = DefaultRouter()
 router.register(r'polls', views.PollNestedViewSet)
+router.register(r'responses', views.PollNestedUserResponseViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

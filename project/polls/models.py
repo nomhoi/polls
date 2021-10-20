@@ -48,13 +48,13 @@ class Choice(models.Model):
         verbose_name_plural = 'варианты ответов'
 
     def __str__(self):
-        return f'{self.question} - {self.choice}' if self.choice else f'{self.question} - text response'
+        return f'{self.question} - {self.choice} - pk:{self.pk}' if self.choice else f'{self.question} - Text Response - pk:{self.pk}'
 
 
 class UserResponse(models.Model):
     """Модель ответов"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
+    poll = models.ForeignKey(Poll, related_name='responses', on_delete=models.CASCADE)
     choice = models.OneToOneField(Choice, on_delete=models.CASCADE, null=True, blank=True)
     boolean_response = models.BooleanField('ответ на вариант', null=True, blank=True)
     text_response = models.TextField('текстовый ответ', null=True, blank=True)
