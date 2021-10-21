@@ -143,3 +143,17 @@ LOGGING = {
         }
     }
 }
+
+
+# Django REST Framework
+# https://www.django-rest-framework.org/api-guide/settings/
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'project.backend.UserIdAuthentication',
+
+        # TODO: Здесь можно добавить нужный бэкенд аутентификации
+        
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
