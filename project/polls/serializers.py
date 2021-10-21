@@ -46,6 +46,17 @@ class PollNestedQuestionSerializer(WritableNestedModelSerializer):
         fields = ('id', 'name', 'start_date', 'end_date', 'description', 'questions')
 
 
+class PollNestedQuestionForUpdateSerializer(WritableNestedModelSerializer):
+    """
+    Сериализатор модели опросов с вопросами без возможности обновления start_date.
+    """
+    questions = QuestionNestedChoiceSerializer(many=True)
+
+    class Meta:
+        model = Poll
+        fields = ('id', 'name', 'end_date', 'description', 'questions')
+
+
 class UserResponseSerializer(UniqueFieldsMixin, serializers.ModelSerializer):
     """
     Сериализатор ответов пользователя    

@@ -6,7 +6,8 @@ from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated, I
 from rest_framework.response import Response
 
 from .models import Choice, Poll, Question, UserResponse
-from .serializers import PollNestedQuestionSerializer, PollNestedUserResponseSerializer, PollSerializer
+from .serializers import PollNestedQuestionSerializer, PollNestedUserResponseSerializer, PollSerializer, \
+    PollNestedQuestionForUpdateSerializer
 
 
 class MixedPermissionModelViewSet(viewsets.ModelViewSet):
@@ -44,6 +45,14 @@ class PollNestedViewSet(MixedPermissionModelViewSet, viewsets.ModelViewSet):
         'destroy':    [IsAdminUser],
         'update':     [IsAdminUser],
     }
+
+    def get_serializer_class(self):
+        serializer_class = self.serializer_class
+
+        if self.request.method == 'PUT':
+            serializer_class = PollNestedQuestionForUpdateSerializer
+
+        return serializer_class
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
